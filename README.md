@@ -122,3 +122,20 @@ Las salidas reales de las herramientas están registradas en la sección **Herra
 3. `php artisan serve` en ejecución y la aplicación abierta en el navegador.
 
 
+## comandos finales
+Set-Location "$env:USERPROFILE\Documents"
+composer create-project laravel/laravel gestor-adso
+Set-Location .\gestor-adso
+php artisan --version
+Copy-Item .env.example .env
+php artisan key:generate
+notepad .env
+php artisan config:clear
+& "C:\xampp\mysql\bin\mysql.exe" -h 127.0.0.1 -P 3306 -u root -e "CREATE DATABASE gestor_adso CHARACTER SET utf8mb4 COLLATE
+utf8mb4_unicode_ci;"
+php artisan migrate
+git status
+git add .
+git commit -m "Semana 1: Entorno listo + Laravel base"
+php artisan serve
+
