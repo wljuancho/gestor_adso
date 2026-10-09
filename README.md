@@ -1,59 +1,124 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Gestor ADSO
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Repositorio del proyecto integrador **Gestor ADSO**, una aplicación web en desarrollo para apoyar la gestión en el contexto del programa de Análisis y Desarrollo de Software (ADSO). Este repositorio contiene actualmente la base de una aplicación Laravel y sus migraciones iniciales.
 
-## About Laravel
+Repositorio remoto: <https://github.com/wljuancho/gestor_adso>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Herramientas y versiones del equipo
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Las siguientes versiones se obtuvieron ejecutando los comandos en el equipo usado para este proyecto. Son resultados reales de ese equipo; pueden ser diferentes en otros computadores.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### PHP
 
-## Learning Laravel
+Comando: `php -v`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```text
+PHP 8.2.12 (cli) (built: Oct 24 2023 21:15:15) (ZTS Visual C++ 2019 x64)
+Copyright (c) The PHP Group
+Zend Engine v4.2.12, Copyright (c) Zend Technologies
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Composer
 
-## Laravel Sponsors
+Comando: `composer -V`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```text
+Composer version 2.10.3 2026-08-27 13:34:23
+PHP version 8.2.12 (C:\xampp\php\php.exe)
+Run the "diagnose" command to get more detailed diagnostics output.
+```
 
-### Premium Partners
+### Laravel
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Comando: `php artisan --version`
 
-## Contributing
+```text
+Laravel Framework 12.69.3
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Git
 
-## Code of Conduct
+Comando: `git --version`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```text
+git version 2.54.0.windows.1
+```
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Requisitos
 
-## License
+- PHP 8.2 o superior, Composer y Git.
+- Windows PowerShell para los comandos de configuración indicados abajo. En otros sistemas operativos, usa los comandos equivalentes.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Instalación y configuración
+
+Abre PowerShell y clona el repositorio:
+
+```powershell
+git clone https://github.com/wljuancho/gestor_adso.git
+Set-Location gestor_adso
+```
+
+Si ya tienes el repositorio clonado, entra a su carpeta y continúa desde el siguiente paso. Instala las dependencias de PHP y crea `.env` solo si aún no existe:
+
+```powershell
+composer install
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+Abre `.env` y verifica la configuración local. Para la base de datos predeterminada SQLite y cambiala a mysql, utiliza:
+
+```dotenv
+APP_NAME="Gestor ADSO"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+DB_CONNECTION=mysql
+```
+
+No es necesario definir `DB_DATABASE` para mysql: la configuración del proyecto usa `database/database.sqlite` por defecto. No publiques el archivo `.env` ni agregues credenciales reales al repositorio.
+
+Genera la clave de la aplicación y crea el archivo SQLite si todavía no existe:
+
+```powershell
+php artisan key:generate
+if (-not (Test-Path database\database.sqlite)) {
+    New-Item -ItemType File -Path database\database.sqlite | Out-Null
+}
+```
+
+## Base de datos y migraciones
+
+Con `DB_CONNECTION=sqlite` y el archivo `database/database.sqlite` creado, ejecuta las migraciones:
+
+```powershell
+php artisan migrate
+```
+
+Las migraciones iniciales incluidas crean las tablas de usuarios, caché y trabajos en cola. Para revisar el estado de las migraciones:
+
+```powershell
+php artisan migrate:status
+```
+
+## Recursos del servidor
+
+
+
+Inicia el servidor de desarrollo de Laravel:
+
+```powershell
+php artisan serve
+```
+
+
+
+## Evidencias del proceso
+
+Las salidas reales de las herramientas están registradas en la sección **Herramientas y versiones del equipo**. Para completar la evidencia visual del proceso, agrega capturas reales en `docs/evidencias/` que muestren:
+
+1. La configuración de `.env` y la base mysql creada. Oculta cualquier clave o dato sensible.
+2. La ejecución exitosa de `php artisan migrate` (y, si se desea, `php artisan migrate:status`).
+3. `php artisan serve` en ejecución y la aplicación abierta en el navegador.
+
+
