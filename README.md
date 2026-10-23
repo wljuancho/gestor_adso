@@ -66,7 +66,9 @@ composer install
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 ```
 
-Abre `.env` y verifica la configuración local. Para la base de datos predeterminada SQLite y cambiala a mysql, utiliza:
+Abre `.env` y configura la conexión local a MariaDB. Define los valores de usuario y contraseña solo en el archivo local; no los publiques ni los incluyas en capturas:
+
+En Laravel, `DB_CONNECTION=mysql` selecciona el controlador MySQL, compatible con el servicio MariaDB incluido en XAMPP.
 
 ```dotenv
 APP_NAME="Gestor ADSO"
@@ -74,32 +76,36 @@ APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
 DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=gestor_adso
 ```
 
-No es necesario definir `DB_DATABASE` para mysql: la configuración del proyecto usa `database/database.sqlite` por defecto. No publiques el archivo `.env` ni agregues credenciales reales al repositorio.
+Completa también `DB_USERNAME` y `DB_PASSWORD` con las credenciales de tu instalación local. El repositorio incluye `.env.example`; `.env` no se debe publicar.
 
-Genera la clave de la aplicación y crea el archivo SQLite si todavía no existe:
+Genera la clave de la aplicación:
 
 ```powershell
 php artisan key:generate
-if (-not (Test-Path database\database.sqlite)) {
-    New-Item -ItemType File -Path database\database.sqlite | Out-Null
-}
 ```
 
 ## Base de datos y migraciones
 
-Con `DB_CONNECTION=sqlite` y el archivo `database/database.sqlite` creado, ejecuta las migraciones:
+En XAMPP, inicia el servicio MySQL/MariaDB. Crea la base de datos si aún no existe:
 
-```powershell
-php artisan migrate
+```sql
+CREATE DATABASE gestor_adso CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Las migraciones iniciales incluidas crean las tablas de usuarios, caché y trabajos en cola. Para revisar el estado de las migraciones:
+Después de guardar la conexión MariaDB en `.env`, limpia la configuración almacenada y ejecuta las migraciones:
 
 ```powershell
+php artisan config:clear
+php artisan migrate
 php artisan migrate:status
 ```
+
+Las migraciones iniciales crean las tablas de usuarios, caché y trabajos en cola.
 
 ## Recursos del servidor
 
@@ -122,20 +128,13 @@ Las salidas reales de las herramientas están registradas en la sección **Herra
 3. `php artisan serve` en ejecución y la aplicación abierta en el navegador.
 
 
-## comandos finales
-Set-Location "$env:USERPROFILE\Documents"
-composer create-project laravel/laravel gestor-adso
-Set-Location .\gestor-adso
-php artisan --version
-Copy-Item .env.example .env
-php artisan key:generate
-notepad .env
-php artisan config:clear
-& "C:\xampp\mysql\bin\mysql.exe" -h 127.0.0.1 -P 3306 -u root -e "CREATE DATABASE gestor_adso CHARACTER SET utf8mb4 COLLATE
-utf8mb4_unicode_ci;"
-php artisan migrate
-git status
-git add .
-git commit -m "Semana 1: Entorno listo + Laravel base"
-php artisan serve
+## Ejecución
+
+Desde la carpeta del proyecto, inicia el servidor de desarrollo:
+
+```powershell
+php artisan serve --host=127.0.0.1 --port=8000
+```
+
+Abre `http://127.0.0.1:8000` en el navegador. Para consultar la versión instalada de Laravel, ejecuta `php artisan --version`.
 
